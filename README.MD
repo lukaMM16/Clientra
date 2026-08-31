@@ -1,10 +1,11 @@
-# Clientra – Flask CRM aplikacija
+# Clientra – Flask CRM Application
 
-Clientra je web aplikacija izrađena u Pythonu (Flask) koja služi kao jednostavni CRM sustav za upravljanje klijentima, uslugama i terminima. Aplikacija omogućuje autentikaciju korisnika, CRUD operacije, rad s bazom podataka (MySQL), validaciju formi, RESTful rute te vlastiti JSON API.
+Clientra is a web application built with Python and Flask that serves as a simple CRM system for managing clients, services, and appointments. The application includes user authentication, CRUD operations, MySQL database integration, form validation, RESTful routes, and a custom JSON API.
 
 ---
 
-## Korištene tehnologije
+## Technologies
+
 - Python 3
 - Flask
 - Flask-SQLAlchemy
@@ -16,113 +17,159 @@ Clientra je web aplikacija izrađena u Pythonu (Flask) koja služi kao jednostav
 - CSS
 - RESTful routing
 - JSON API
-- Vanjski API (Open-Meteo – weather)
+- External API integration (Open-Meteo Weather API)
 
 ---
 
-## Struktura projekta
+## Project Structure
 
+```text
 Clientra/
 │
 ├── app/
-│ ├── init.py # create_app(), inicijalizacija ekstenzija
-│ ├── models/ # SQLAlchemy modeli (User, Client, Service, Appointment)
-│ ├── routes/ # Flask blueprint rute (CRUD, auth, API)
-│ ├── forms/ # Flask-WTF forme i validacija
-│ ├── templates/ # Jinja2 HTML predlošci
-│ ├── static/ # CSS i statičke datoteke
-│ └── utils/ # Pomoćne funkcije (npr. email)
+│   ├── __init__.py      # Application factory and extension initialization
+│   ├── models/          # SQLAlchemy models (User, Client, Service, Appointment)
+│   ├── routes/          # Flask Blueprints (CRUD, authentication, API)
+│   ├── forms/           # Flask-WTF forms and validation
+│   ├── templates/       # Jinja2 HTML templates
+│   ├── static/          # CSS and static files
+│   └── utils/           # Helper functions (e.g. email)
 │
-├── migrations/ # Flask-Migrate migracije baze
-├── requirements.txt # Python ovisnosti
-├── config.py # Konfiguracija aplikacije
-├── .env # Varijable okruženja
-├── app.py # Pokretanje aplikacije
-└── README.md # Dokumentacija
+├── migrations/          # Flask-Migrate database migrations
+├── requirements.txt     # Python dependencies
+├── config.py            # Application configuration
+├── app.py               # Application entry point
+└── README.md            # Project documentation
+```
 
-
+> Environment variables and sensitive configuration are stored locally in a `.env` file and are not included in the repository.
 
 ---
 
-## Funkcionalnosti aplikacije
+## Features
 
-### Autentikacija (Flask-Login)
-- Registracija korisnika
-- Prijava i odjava
-- Zaštita ruta pomoću `@login_required`
-- Svaki korisnik vidi isključivo svoje podatke
+### Authentication
 
-### CRUD operacije
-- Klijenti – dodavanje, uređivanje, brisanje, pretraga, CSV export
-- Usluge – dodavanje, uređivanje, brisanje, pretraga, CSV export
-- Termini – dodavanje, uređivanje, brisanje, status termina
+- User registration
+- Login and logout
+- Protected routes using `@login_required`
+- Each user can access only their own data
 
-### Baza podataka
-- MySQL baza podataka
+### CRUD Operations
+
+**Clients**
+- Create, edit and delete clients
+- Search functionality
+- CSV export
+
+**Services**
+- Create, edit and delete services
+- Search functionality
+- CSV export
+
+**Appointments**
+- Create, edit and delete appointments
+- Appointment status management
+
+### Database
+
+- MySQL database
 - SQLAlchemy ORM
-- Relacije između tablica (foreign keys)
-- Očuvanje integriteta podataka (nije moguće obrisati klijenta/uslugu ako postoje termini)
+- Relationships between database tables using foreign keys
+- Data integrity protection — clients or services cannot be deleted if related appointments exist
 
-### Flask-WTF forme i validacija
-- Serverska validacija pomoću WTForms
-- Klijentska validacija (HTML atributi)
-- CSRF zaštita
-- Prikaz validacijskih grešaka u templateima
+### Forms and Validation
+
+- Server-side validation using WTForms
+- Client-side HTML validation
+- CSRF protection
+- Validation error messages displayed in templates
 
 ### Dashboard
-- Ukupan broj klijenata, usluga i termina
-- Broj termina za današnji dan
-- Nadolazeći termini
-- Ukupni prihod
-- Prihod i sati rada za tekući mjesec
 
-### Vanjski API
-- Dohvat trenutnog vremena pomoću Open-Meteo API-ja
+- Total number of clients, services and appointments
+- Number of appointments scheduled for the current day
+- Upcoming appointments
+- Total revenue
+- Revenue and working hours for the current month
+
+### External API Integration
+
+- Current weather data retrieved using the Open-Meteo API
 
 ---
 
-## RESTful routing
-Rute su imenovane prema REST principima (imenice + HTTP metode), npr.:
-GET /clients
+## RESTful Routing
+
+Routes follow REST-oriented principles using resources and HTTP methods.
+
+Examples:
+
+```text
+GET  /clients
 POST /clients/new
 POST /clients/<id>/delete
-GET /appointments
-
-
----
-
-## JSON API (bonus funkcionalnost)
-
-Aplikacija sadrži vlastiti read-only JSON API:
-
-- `GET /api/appointments`  
-  Vraća termine u JSON formatu uz mogućnost filtriranja
-
-- `GET /api/summary`  
-  Vraća agregirane podatke (broj zapisa, prihod, sati rada)
-
-API je zaštićen Flask-Loginom i vraća samo podatke prijavljenog korisnika.
+GET  /appointments
+```
 
 ---
 
-## Pokretanje aplikacije
+## JSON API
 
-### 1. Instalacija ovisnosti
-U root direktoriju projekta pokrenuti:
+The application includes a custom read-only JSON API.
+
+### `GET /api/appointments`
+
+Returns appointment data in JSON format with filtering support.
+
+### `GET /api/summary`
+
+Returns aggregated data such as:
+
+- Number of records
+- Revenue
+- Working hours
+
+The API is protected by Flask-Login and returns only data belonging to the currently authenticated user.
+
+---
+
+## Running the Application
+
+### 1. Install dependencies
 
 ```bash
 pip install -r requirements.txt
-2. Konfiguracija
+```
 
-Kreirati .env datoteku s primjerom:
+### 2. Configure environment variables
 
+Create a local `.env` file:
+
+```env
 SECRET_KEY=your_secret_key
 DATABASE_URL=mysql+pymysql://user:password@localhost/clientra
+```
 
-3. Pokretanje aplikacije
+### 3. Run the application
+
+```bash
 python app.py
+```
 
+The application will be available locally at:
 
-Aplikacija će biti dostupna na adresi:
-
+```text
 http://127.0.0.1:5000
+```
+
+---
+
+## About the Project
+
+Clientra was developed as part of my Computer Science studies. The project provided practical experience with Flask application architecture, relational databases, authentication and authorization, CRUD operations, REST APIs, form validation, and external API integration.
+
+## Author
+
+**Luka Mikac**  
+Computer Science Student
