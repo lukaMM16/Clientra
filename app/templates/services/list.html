@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Usluge | Clientra{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="mb-0">Usluge</h1>
+    <div class="text-muted">Pregled i upravljanje uslugama</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-dark" href="{{ url_for('services.export_services_csv') }}">Export CSV</a>
+    <a class="btn btn-warning" href="{{ url_for('services.create_service') }}">+ Nova usluga</a>
+  </div>
+</div>
+
+<form class="d-flex gap-2 mb-3" method="GET" action="{{ url_for('services.list_services') }}">
+  <input class="form-control" name="q" value="{{ q }}" placeholder="Pretraga po nazivu">
+  <button class="btn btn-dark" type="submit">Traži</button>
+</form>
+
+<div class="card p-3">
+  {% if services %}
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Naziv</th>
+            <th class="text-end">Cijena</th>
+            <th class="text-end">Trajanje</th>
+            <th class="text-end">Akcije</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in services %}
+            <tr>
+              <td class="fw-semibold">{{ s.name }}</td>
+              <td class="text-end">{{ "%.2f"|format(s.price) }} €</td>
+              <td class="text-end">{{ s.duration_min }} min</td>
+              <td class="text-end">
+                <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('services.edit_service', service_id=s.id) }}">Uredi</a>
+
+                <form id="del-service-{{ s.id }}"
+                      method="POST"
+                      action="{{ url_for('services.delete_service', service_id=s.id) }}"
+                      class="d-inline">
+                  <button type="submit"
+                          class="btn btn-outline-danger btn-sm"
+                          data-confirm-delete
+                          data-form-id="del-service-{{ s.id }}"
+                          data-message="Obrisati uslugu: {{ s.name }}?">
+                    Obriši
+                  </button>
+                </form>
+
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-muted">Nema usluga. Dodaj prvu uslugu.</div>
+  {% endif %}
+</div>
+{% endblock %}

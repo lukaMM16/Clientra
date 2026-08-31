@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block title %}Klijenti | Clientra{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <div>
+    <h1 class="mb-0">Klijenti</h1>
+    <div class="text-muted">Pregled i upravljanje klijentima</div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a class="btn btn-warning" href="{{ url_for('clients.create_client') }}">+ Novi klijent</a>
+    <a class="btn btn-outline-dark" href="{{ url_for('clients.export_clients_csv') }}">Export CSV</a>
+  </div>
+</div>
+
+<form method="get" class="mb-3 d-flex gap-2">
+  <input
+    type="text"
+    name="q"
+    class="form-control"
+    placeholder="Pretraga po imenu"
+    value="{{ q }}"
+  >
+  <button class="btn btn-outline-dark">Traži</button>
+</form>
+
+<div class="card p-3">
+  {% if clients %}
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Ime</th>
+          <th>Email</th>
+          <th>Telefon</th>
+          <th class="text-end">Akcije</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in clients %}
+        <tr>
+          <td class="fw-semibold">
+            <a
+              class="text-decoration-none"
+              href="{{ url_for('clients.client_detail', client_id=c.id) }}"
+            >
+              {{ c.name }}
+            </a>
+          </td>
+
+          <td>
+            {% if c.email %}
+              {{ c.email }}
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+
+          <td>
+            {% if c.phone %}
+              {{ c.phone }}
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+
+          <td class="text-end">
+            <a
+              class="btn btn-sm btn-outline-secondary"
+              href="{{ url_for('clients.edit_client', client_id=c.id) }}"
+            >
+              Uredi
+            </a>
+
+            <!-- Lijepi modal delete (bez confirm()) -->
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger"
+              data-delete-url="{{ url_for('clients.delete_client', client_id=c.id) }}"
+              data-delete-text="Obrisati klijenta? Ako ima termine, brisanje neće biti moguće."
+              onclick="openDeleteModal(this)"
+            >
+              Obriši
+            </button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="text-muted">Nema klijenata.</div>
+  {% endif %}
+</div>
+{% endblock %}

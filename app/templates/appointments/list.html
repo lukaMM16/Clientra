@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Termini | Clientra{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h2 class="mb-0">Termini</h2>
+    <div class="text-muted">Pregled i upravljanje terminima</div>
+  </div>
+  <a class="btn btn-warning" href="{{ url_for('appointments.create_appointment') }}">+ Novi termin</a>
+  <a class="btn btn-outline-dark" href="{{ url_for('appointments.export_appointments_csv') }}">Export CSV</a>
+
+</div>
+
+<form class="row g-2 mb-3" method="GET">
+  <div class="col-md-6">
+    <input class="form-control" name="q" value="{{ q }}" placeholder="Pretraga (npr. scheduled, done, canceled)">
+  </div>
+  <div class="col-auto">
+    <button class="btn btn-dark" type="submit">Traži</button>
+  </div>
+  {% if q %}
+  <div class="col-auto">
+    <a class="btn btn-outline-secondary" href="{{ url_for('appointments.list_appointments') }}">Reset</a>
+  </div>
+  {% endif %}
+</form>
+
+<div class="card p-3">
+  {% if appts %}
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Klijent</th>
+            <th>Usluga</th>
+            <th>Status</th>
+            <th class="text-end">Akcije</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in appts %}
+          <tr>
+            <td class="fw-semibold">{{ a.date_time.strftime("%d.%m.%Y %H:%M") }}</td>
+
+            <td class="text-muted">
+              {{ client_map[a.client_id].name if a.client_id in client_map else "-" }}
+            </td>
+
+            <td class="text-muted">
+              {% if a.service_id in service_map %}
+                {{ service_map[a.service_id].name }}
+                <span class="text-muted">({{ "%.2f"|format(service_map[a.service_id].price) }} €)</span>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+
+            <td>
+              {% if a.status == "scheduled" %}
+                <span class="badge text-bg-warning">scheduled</span>
+              {% elif a.status == "done" %}
+                <span class="badge text-bg-dark">done</span>
+              {% else %}
+                <span class="badge text-bg-secondary">canceled</span>
+              {% endif %}
+            </td>
+
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-dark" href="{{ url_for('appointments.edit_appointment', appt_id=a.id) }}">Uredi</a>
+
+          <form id="del-appt-{{ a.id }}" method="POST" action="{{ url_for('appointments.delete_appointment', appt_id=a.id) }}" class="d-inline">
+            <button
+                type="submit"
+               class="btn btn-outline-danger"
+               data-confirm-delete
+               data-form-id="del-appt-{{ a.id }}"
+                data-message="Obrisati termin za {{ client_map[a.client_id].name }}?"
+               >
+                Obriši
+             </button>
+          </form>
+
+            </td>
+          </tr>
+
+          {% if a.note %}
+          <tr>
+            <td colspan="5" class="text-muted small">
+              <strong>Napomena:</strong> {{ a.note }}
+            </td>
+          </tr>
+          {% endif %}
+
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <div class="fs-5 fw-semibold">Nema termina</div>
+      <div class="text-muted mb-3">Dodaj prvi termin kad imaš klijente i usluge.</div>
+      <a class="btn btn-warning" href="{{ url_for('appointments.create_appointment') }}">+ Novi termin</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

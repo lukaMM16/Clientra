@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Home | Clientra{% endblock %}
+
+{% block content %}
+
+{# WEATHER (radi s oba formata: temperature/windspeed ili temp/wind) #}
+{% if weather %}
+<div class="card p-3 mb-4 weather-card">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <strong>
+        {{ weather.city if weather.city is defined else "Zagreb" }} – trenutno vrijeme
+      </strong><br>
+      <small class="text-muted">
+        Vrijeme: {{ weather.time }}
+      </small>
+    </div>
+
+    <div class="text-end">
+      <div class="fs-4 fw-bold">
+        {{ weather.temperature if weather.temperature is defined else weather.temp }}°C
+      </div>
+      <small class="text-muted">
+        Vjetar:
+        {{ weather.windspeed if weather.windspeed is defined else weather.wind }} km/h
+      </small>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="dashboard-hero card p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div>
+      <h1 class="mb-1">Dobrodošao, {{ current_user.username }} </h1>
+      <div class="text-muted">Brzi pregled CRM-a i poslovanja.</div>
+    </div>
+
+    <div class="d-flex gap-2">
+      <a class="btn btn-warning" href="{{ url_for('clients.create_client') }}">+ Klijent</a>
+      <a class="btn btn-outline-dark" href="{{ url_for('services.create_service') }}">+ Usluga</a>
+      <a class="btn btn-outline-dark" href="{{ url_for('appointments.create_appointment') }}">+ Termin</a>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="row g-4 mb-4">
+  <div class="col-md-3">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Klijenti</div>
+      <div class="stat-number">{{ clients_count }}</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Usluge</div>
+      <div class="stat-number">{{ services_count }}</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Svi termini</div>
+      <div class="stat-number">{{ appts_count }}</div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card stat-card p-3 highlight">
+      <div class="text-muted small">Danas</div>
+      <div class="stat-number">{{ today_count }}</div>
+      <small class="text-muted">termin(a)</small>
+    </div>
+  </div>
+</div>
+
+<!-- FINANCIJE -->
+<div class="row g-4 mb-4">
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Ukupni prihod</div>
+      <div class="stat-number">{{ "%.2f"|format(total_revenue) }} €</div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Prihod ovaj mjesec</div>
+      <div class="stat-number">{{ "%.2f"|format(month_revenue) }} €</div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Sati rada ovaj mjesec</div>
+      <div class="stat-number">{{ month_hours_label }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card p-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="mb-0">Najbliži termini</h5>
+        <a class="btn btn-sm btn-outline-dark" href="{{ url_for('appointments.list_appointments') }}">Svi termini</a>
+      </div>
+
+      {% if upcoming %}
+      <table class="table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>Datum</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in upcoming %}
+          <tr>
+            <td>{{ a.date_time.strftime("%d.%m.%Y %H:%M") }}</td>
+            <td><span class="badge bg-warning text-dark">{{ a.status }}</span></td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-secondary"
+                 href="{{ url_for('appointments.edit_appointment', appt_id=a.id) }}">
+                Uredi
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="text-muted">Nema nadolazećih termina.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <div class="card p-3">
+      <h5>Savjeti</h5>
+      <ul class="small text-muted mb-0">
+        <li>Dodaj email klijenta za mail potvrde.</li>
+        <li>FK zaštita sprječava brisanje podataka s terminima.</li>
+        <li>CSV export koristi za evidenciju.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

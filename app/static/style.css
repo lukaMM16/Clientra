@@ -1,0 +1,245 @@
+:root {
+  /* Clientra brand colors */
+  --clientra-yellow: #f4c430;
+  --clientra-dark: #1f2933;   /* soft charcoal */
+  --clientra-gray: #f5f6f8;
+}
+
+/* =========================
+   GLOBAL
+========================= */
+body {
+  background-color: var(--clientra-gray);
+  color: #111;
+}
+
+a {
+  color: var(--clientra-dark);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--clientra-yellow);
+}
+
+/* =========================
+   NAVBAR
+========================= */
+.navbar {
+  background-color: var(--clientra-dark) !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+}
+
+.navbar-brand {
+  color: var(--clientra-yellow) !important;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.navbar-text {
+  font-size: 0.9rem;
+  color: #d1d5db !important;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn-warning {
+  background-color: var(--clientra-yellow);
+  border-color: var(--clientra-yellow);
+  color: var(--clientra-dark);
+  font-weight: 600;
+}
+
+.btn-warning:hover {
+  background-color: #e0b82a;
+  border-color: #e0b82a;
+}
+
+.btn-dark {
+  background-color: var(--clientra-dark);
+  border-color: var(--clientra-dark);
+  font-weight: 500;
+}
+
+.btn-dark:hover {
+  background-color: #111827;
+  border-color: #111827;
+}
+
+.btn-outline-dark {
+  border-color: var(--clientra-dark);
+  color: var(--clientra-dark);
+}
+
+.btn-outline-dark:hover {
+  background-color: var(--clientra-dark);
+  color: #fff;
+}
+
+/* =========================
+   CARDS
+========================= */
+.card {
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(0,0,0,.08);
+  background-color: #fff;
+}
+
+/* =========================
+   TABLES
+========================= */
+.table thead th {
+  border-bottom: 2px solid var(--clientra-yellow);
+  color: var(--clientra-dark);
+  font-weight: 600;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(244,196,48,.08);
+}
+
+/* =========================
+   FORMS
+========================= */
+.form-control {
+  border-radius: 14px;
+  border-color: #d1d5db;
+}
+
+.form-control:focus {
+  border-color: var(--clientra-yellow);
+  box-shadow: 0 0 0 0.2rem rgba(244,196,48,.25);
+}
+
+/* =========================
+   ALERTS
+========================= */
+.alert-success {
+  background-color: rgba(244,196,48,.15);
+  color: var(--clientra-dark);
+  border: none;
+}
+
+.alert-danger {
+  background-color: #fee2e2;
+  color: #7f1d1d;
+  border: none;
+}
+
+.alert-info {
+  background-color: #e5e7eb;
+  color: var(--clientra-dark);
+  border: none;
+}
+
+/* =========================
+   MISC
+========================= */
+.shadow-soft {
+  box-shadow: 0 10px 24px rgba(0,0,0,.08);
+}
+
+.rounded-xl {
+  border-radius: 20px;
+}
+h1 { font-weight: 800; }
+.badge.text-bg-warning { color: var(--clientra-dark); }
+.hero-card { border-radius: 18px; }
+.weather-card { border-radius: 18px; }
+
+.stat-card { border-radius: 16px; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.stat-accent { background: rgba(244,196,48,.12); }
+
+h1 { font-weight: 800; letter-spacing: -0.5px; }
+.clientra-modal {
+  border-radius: 16px;
+  overflow: hidden;
+}
+.clientra-modal .modal-header {
+  background: #1f2937;
+  color: #facc15;
+}
+.clientra-modal .modal-footer {
+  background: #f8fafc;
+}
+.clientra-nav {
+  background: #1f2937;
+}
+
+.clientra-nav .nav-link {
+  color: #d1d5db;
+  padding: 0.5rem 0.9rem;
+  border-radius: 10px;
+  margin-right: 4px;
+}
+
+.clientra-nav .nav-link:hover {
+  background: rgba(250, 204, 21, 0.15);
+  color: #facc15;
+}
+
+.clientra-nav .nav-link.active {
+  background: #facc15;
+  color: #1f2937;
+  font-weight: 600;
+}
+.hero-card {
+  border-radius: 20px;
+}
+
+.hero-badge {
+  background: rgba(250, 204, 21, 0.15);
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  font-weight: 700;
+  color: #ca8a04;
+}
+
+.feature-card {
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.weather-card {
+  border-radius: 18px;
+}
+.dashboard-hero {
+  border-radius: 18px;
+}
+
+.stat-card {
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,.06);
+}
+
+.stat-card .stat-number {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 6px 0 2px;
+}
+
+.stat-card.highlight {
+  background: rgba(250, 204, 21, 0.18);
+  border: 1px solid rgba(250, 204, 21, 0.35);
+}
+.modal-overlay{
+  position:fixed; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background: rgba(0,0,0,.45);
+  z-index:9999;
+}
+.modal-overlay.hidden{ display:none; }
+
+.modal-box{
+  width:min(520px, 92vw);
+  background:#fff;
+  border-radius:16px;
+  padding:18px 18px 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.22);
+  border:1px solid rgba(0,0,0,.08);
+}

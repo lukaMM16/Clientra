@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Clientra{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7 col-lg-6">
+    <div class="card p-4">
+      <h2 class="mb-1">{{ title }}</h2>
+      <p class="text-muted mb-4">Unesi podatke i spremi.</p>
+
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ form.name.label(class="form-label") }}
+          {{ form.name(class="form-control", placeholder="npr. Konsultacije") }}
+          {% for e in form.name.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.price.label(class="form-label") }}
+          {{ form.price(class="form-control", placeholder="npr. 25.00") }}
+          {% for e in form.price.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.duration_min.label(class="form-label") }}
+          {{ form.duration_min(class="form-control", placeholder="npr. 60") }}
+          {% for e in form.duration_min.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="d-flex gap-2">
+          {{ form.submit(class="btn btn-warning") }}
+          <a class="btn btn-outline-secondary" href="{{ url_for('services.list_services') }}">Natrag</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

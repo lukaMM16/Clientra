@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="hr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Clientra{% endblock %}</title>
+
+  <!-- Bootstrap (CDN) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Tvoj CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark clientra-nav">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-warning" href="{{ url_for('main.home') }}">
+      Clientra
+    </a>
+
+    <div class="collapse navbar-collapse">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint == 'main.home' %}active{% endif %}"
+             href="{{ url_for('main.home') }}">
+            Home
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint.startswith('clients.') %}active{% endif %}"
+             href="{{ url_for('clients.list_clients') }}">
+            Klijenti
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint.startswith('services.') %}active{% endif %}"
+             href="{{ url_for('services.list_services') }}">
+            Usluge
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {% if request.endpoint.startswith('appointments.') %}active{% endif %}"
+             href="{{ url_for('appointments.list_appointments') }}">
+            Termini
+          </a>
+        </li>
+      </ul>
+
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-light small">
+          Bok, {{ current_user.username }}
+        </span>
+        <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.logout') }}">
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<main class="container py-4">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Delete confirm modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content clientra-modal">
+      <div class="modal-header">
+        <h5 class="modal-title">Potvrda brisanja</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+      </div>
+      <div class="modal-body">
+        <div id="confirmDeleteText">Jesi li siguran da želiš obrisati?</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Odustani</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Obriši</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-confirm-delete]");
+    if (!btn) return;
+
+    e.preventDefault();
+
+    const formId = btn.getAttribute("data-form-id");
+    const message = btn.getAttribute("data-message") || "Jesi li siguran?";
+    const modalEl = document.getElementById("confirmDeleteModal");
+    const modalText = document.getElementById("confirmDeleteText");
+    const confirmBtn = document.getElementById("confirmDeleteBtn");
+
+    modalText.textContent = message;
+
+    confirmBtn.onclick = function () {
+      const form = document.getElementById(formId);
+      if (form) form.submit();
+    };
+
+    const modal = new bootstrap.Modal(modalEl);
+    modal.show();
+  });
+</script>
+<!-- DELETE MODAL (custom) -->
+<div id="deleteModal" class="modal-overlay hidden">
+  <div class="modal-box">
+    <h3 class="mb-2">Potvrda brisanja</h3>
+    <p id="deleteModalText" class="text-muted mb-3"></p>
+
+    <div class="d-flex gap-2 justify-content-end">
+      <form id="deleteForm" method="post">
+        <button type="submit" class="btn btn-danger">U redu</button>
+      </form>
+      <button type="button" class="btn btn-outline-secondary" onclick="closeDeleteModal()">Odustani</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function openDeleteModal(btn) {
+  const url = btn.dataset.deleteUrl;
+  const text = btn.dataset.deleteText;
+
+  document.getElementById("deleteForm").action = url;
+  document.getElementById("deleteModalText").innerText = text;
+  document.getElementById("deleteModal").classList.remove("hidden");
+}
+
+function closeDeleteModal() {
+  document.getElementById("deleteModal").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>

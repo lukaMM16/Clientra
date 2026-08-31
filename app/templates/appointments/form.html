@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | Clientra{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-7">
+    <div class="card p-4">
+      <h2 class="mb-1">{{ title }}</h2>
+      <p class="text-muted mb-4">Odaberi klijenta, uslugu i vrijeme.</p>
+
+      <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+          {{ form.client_id.label(class="form-label") }}
+          {{ form.client_id(class="form-select") }}
+          {% for e in form.client_id.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.service_id.label(class="form-label") }}
+          {{ form.service_id(class="form-select") }}
+          {% for e in form.service_id.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.date_time.label(class="form-label") }}
+          {{ form.date_time(class="form-control") }}
+          {% for e in form.date_time.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+          <div class="form-text">Format: yyyy-mm-dd hh:mm (browser ima svoj picker)</div>
+        </div>
+
+        <div class="mb-3">
+          {{ form.status.label(class="form-label") }}
+          {{ form.status(class="form-select") }}
+          {% for e in form.status.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+          {{ form.note.label(class="form-label") }}
+          {{ form.note(class="form-control", rows="3", placeholder="Opcionalno...") }}
+          {% for e in form.note.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="d-flex gap-2">
+          {{ form.submit(class="btn btn-warning") }}
+          <a class="btn btn-outline-secondary" href="{{ url_for('appointments.list_appointments') }}">Natrag</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

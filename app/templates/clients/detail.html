@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}{{ client.name }} | Clientra{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+  <div>
+    <h1 class="mb-1">{{ client.name }}</h1>
+    <div class="text-muted">
+      {% if client.email %}{{ client.email }}{% else %}bez emaila{% endif %}
+      •
+      {% if client.phone %}{{ client.phone }}{% else %}bez telefona{% endif %}
+    </div>
+  </div>
+
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="{{ url_for('clients.edit_client', client_id=client.id) }}">Uredi</a>
+    <a class="btn btn-outline-dark" href="{{ url_for('clients.list_clients') }}">Natrag</a>
+  </div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Ukupno termina</div>
+      <div class="stat-number">{{ total_appts }}</div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Ukupno potrošeno</div>
+      <div class="stat-number">{{ "%.2f"|format(total_spent) }} €</div>
+      <div class="small text-muted">bez canceled</div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card stat-card p-3">
+      <div class="text-muted small">Ukupno minuta</div>
+      <div class="stat-number">{{ total_minutes }}</div>
+      <div class="small text-muted">min</div>
+    </div>
+  </div>
+</div>
+
+<div class="card p-3">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h5 class="mb-0">Zadnjih 10 termina</h5>
+    <a class="btn btn-sm btn-outline-dark" href="{{ url_for('appointments.create_appointment') }}">+ Novi termin</a>
+  </div>
+
+  {% if last_appts %}
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Datum</th>
+          <th>Usluga</th>
+          <th>Status</th>
+          <th class="text-end">Akcija</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for a in last_appts %}
+        <tr>
+          <td class="fw-semibold">{{ a.date_time.strftime("%d.%m.%Y %H:%M") }}</td>
+          <td>
+            {% set s = service_map.get(a.service_id) %}
+            {% if s %}
+              {{ s.name }} ({{ "%.2f"|format(s.price) }} € / {{ s.duration_min }} min)
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td><span class="badge bg-warning text-dark">{{ a.status }}</span></td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary"
+               href="{{ url_for('appointments.edit_appointment', appt_id=a.id) }}">
+              Uredi
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <div class="text-muted">Klijent još nema termina.</div>
+  {% endif %}
+</div>
+{% endblock %}
